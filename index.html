@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Age & Zodiac Sign Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: url('planets-colorful-2880x1800-10059.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: rgba(14, 138, 210, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        input[type="date"] {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            width: 100%;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4285f4;
+            color: rgb(254, 154, 154);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e32016;
+        }
+
+        #result {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .symbol {
+            font-size: 40px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Age & Zodiac Calculator</h2>
+        <input type="date" id="dob" />
+        <button onclick="calculate()">Calculate</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const dobInput = document.getElementById('dob').value;
+            const dob = new Date(dobInput);
+            if (isNaN(dob)) {
+                alert("Please select your date of birth.");
+                return;
+            }
+
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            if (
+                today.getMonth() < dob.getMonth() ||
+                (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())
+            ) {
+                age--;
+            }
+
+            const month = dob.getMonth() + 1;
+            const day = dob.getDate();
+            const { name, symbol } = getZodiac(month, day);
+
+            document.getElementById('result').innerHTML = `
+                You are <b>${age}</b> years old.<br/>
+                Your Zodiac Sign is: <b>${name}</b>
+                <div class="symbol">${symbol}</div>
+            `;
+        }
+
+        function getZodiac(month, day) {
+            const signs = [
+                { name: "Capricorn", symbol: "♑", from: [12, 22], to: [1, 19] },
+                { name: "Aquarius", symbol: "♒", from: [1, 20], to: [2, 18] },
+                { name: "Pisces", symbol: "♓", from: [2, 19], to: [3, 20] },
+                { name: "Aries", symbol: "♈", from: [3, 21], to: [4, 19] },
+                { name: "Taurus", symbol: "♉", from: [4, 20], to: [5, 20] },
+                { name: "Gemini", symbol: "♊", from: [5, 21], to: [6, 20] },
+                { name: "Cancer", symbol: "♋", from: [6, 21], to: [7, 22] },
+                { name: "Leo", symbol: "♌", from: [7, 23], to: [8, 22] },
+                { name: "Virgo", symbol: "♍", from: [8, 23], to: [9, 22] },
+                { name: "Libra", symbol: "♎", from: [9, 23], to: [10, 22] },
+                { name: "Scorpio", symbol: "♏", from: [10, 23], to: [11, 21] },
+                { name: "Sagittarius", symbol: "♐", from: [11, 22], to: [12, 21] }
+            ];
+
+            for (let sign of signs) {
+                const [fromMonth, fromDay] = sign.from;
+                const [toMonth, toDay] = sign.to;
+
+                if (
+                    (month === fromMonth && day >= fromDay) ||
+                    (month === toMonth && day <= toDay) ||
+                    (fromMonth > toMonth && 
+                     ((month === fromMonth && day >= fromDay) || 
+                      (month === toMonth && day <= toDay)))
+                ) {
+                    return sign;
+                }
+            }
+
+            return { name: "Unknown", symbol: "?" };
+        }
+    </script>
+</body>
+</html>
